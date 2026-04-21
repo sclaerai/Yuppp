@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YUPPP — Finally a PG That Doesn't Suck</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFE600;
+    --black: #0A0A0A;
+    --white: #FAFAFA;
+    --border: 3px solid #0A0A0A;
+    --shadow: 6px 6px 0px #0A0A0A;
+    --shadow-lg: 10px 10px 0px #0A0A0A;
+    --shadow-xl: 14px 14px 0px #0A0A0A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--yellow);
+    color: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--yellow);
+    border-bottom: 4px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 68px;
+  }
+
+  .logo {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 2.2rem;
+    color: var(--black);
+    letter-spacing: -1px;
+    text-decoration: none;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .logo-box {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 2px 10px 4px;
+    display: inline-block;
+    transform: rotate(-2deg);
+    font-size: 2rem;
+    box-shadow: var(--shadow);
+  }
+
+  .logo-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: var(--black);
+    color: var(--yellow);
+    padding: 2px 6px;
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .nav-cta {
+    background: var(--black);
+    color: var(--yellow);
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 10px 20px;
+    border: var(--border);
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .nav-cta:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 4px solid var(--black);
+    padding-top: 68px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    padding: 5rem 3rem 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 4px solid var(--black);
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: var(--black);
+    color: var(--yellow);
+    padding: 6px 14px;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    animation: slideIn 0.6s ease forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 9vw, 8rem);
+    line-height: 0.9;
+    color: var(--black);
+    -webkit-text-stroke: 2px var(--black);
+    margin-bottom: 1rem;
+    animation: slideIn 0.7s ease forwards;
+  }
+
+  .hero-title span {
+    display: block;
+    color: var(--black);
+    position: relative;
+  }
+
+  .hero-title .outline {
+    -webkit-text-stroke: 3px var(--black);
+    color: transparent;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--black);
+    line-height: 1.5;
+    margin-bottom: 2.5rem;
+    max-width: 400px;
+    animation: slideIn 0.8s ease forwards;
+  }
+
+  .hero-subtitle strong {
+    font-weight: 900;
+    background: var(--black);
+    color: var(--yellow);
+    padding: 1px 6px;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: slideIn 0.9s ease forwards;
+  }
+
+  .btn-primary {
+    background: var(--black);
+    color: var(--yellow);
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 14px 28px;
+    border: var(--border);
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--black);
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 14px 28px;
+    border: var(--border);
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: var(--shadow-xl);
+    background: var(--black);
+    color: var(--yellow);
+  }
+
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* BUILDING ILLUSTRATION */
+  .building-wrap {
+    position: relative;
+    width: 280px;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-16px); }
+  }
+
+  .building-card {
+    background: var(--black);
+    border: 4px solid var(--black);
+    box-shadow: var(--shadow-xl);
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .building-name {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 1.5rem;
+    color: var(--yellow);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  .building-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--yellow);
+    opacity: 0.7;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .floor-badge {
+    background: var(--yellow);
+    color: var(--black);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    padding: 0.5rem 1.5rem;
+    display: inline-block;
+    margin-bottom: 1rem;
+    box-shadow: 4px 4px 0 rgba(255,230,0,0.3);
+  }
+
+  .floor-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--yellow);
+    opacity: 0.6;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .view-tag {
+    margin-top: 1.2rem;
+    background: rgba(255,230,0,0.15);
+    border: 1px solid var(--yellow);
+    color: var(--yellow);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    padding: 6px 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* FLOATING TAGS */
+  .floating-tag {
+    position: absolute;
+    background: var(--yellow);
+    border: 3px solid var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    box-shadow: var(--shadow);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    animation: wiggle 3s ease-in-out infinite;
+  }
+
+  .ft1 { top: 15%; right: 5%; animation-delay: 0.3s; }
+  .ft2 { bottom: 20%; left: 3%; animation-delay: 0.8s; transform: rotate(-4deg); }
+  .ft3 { top: 35%; left: 5%; animation-delay: 1.2s; transform: rotate(3deg); }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg) translateY(0); }
+    25% { transform: rotate(-2deg) translateY(-3px); }
+    75% { transform: rotate(2deg) translateY(3px); }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TICKER */
+  .ticker {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 12px 0;
+    border-bottom: 4px solid var(--black);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .ticker-inner {
+    display: inline-flex;
+    animation: ticker 22s linear infinite;
+    gap: 0;
+  }
+
+  .ticker-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    padding: 0 2rem;
+  }
+
+  .ticker-dot {
+    font-size: 1.2rem;
+    color: var(--yellow);
+    opacity: 0.5;
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* OFFER SECTION */
+  .offers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 4px solid var(--black);
+  }
+
+  .offer-card {
+    padding: 3rem 2.5rem;
+    border-right: 4px solid var(--black);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+
+  .offer-card:last-child { border-right: none; }
+
+  .offer-card:hover { background: var(--black); }
+  .offer-card:hover .offer-title,
+  .offer-card:hover .offer-desc,
+  .offer-card:hover .offer-icon { color: var(--yellow); }
+  .offer-card:hover .offer-tag { background: var(--yellow); color: var(--black); }
+
+  .offer-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+    transition: color 0.2s;
+  }
+
+  .offer-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--black);
+    color: var(--yellow);
+    padding: 4px 10px;
+    display: inline-block;
+    margin-bottom: 1rem;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .offer-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    transition: color 0.2s;
+  }
+
+  .offer-desc {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    opacity: 0.8;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  /* SERVICES GRID */
+  .services-section {
+    padding: 6rem 3rem;
+    border-bottom: 4px solid var(--black);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+    border-bottom: 4px solid var(--black);
+    padding-bottom: 2rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 0.9;
+    color: var(--black);
+  }
+
+  .section-title .outline {
+    -webkit-text-stroke: 2px var(--black);
+    color: transparent;
+  }
+
+  .section-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    opacity: 0.5;
+    text-transform: uppercase;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 4px solid var(--black);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .service-item {
+    padding: 2rem 1.5rem;
+    border-right: 3px solid var(--black);
+    border-bottom: 3px solid var(--black);
+    position: relative;
+    transition: background 0.15s, transform 0.15s;
+    cursor: default;
+  }
+
+  .service-item:nth-child(4n) { border-right: none; }
+  .service-item:nth-last-child(-n+4) { border-bottom: none; }
+
+  .service-item:hover {
+    background: var(--black);
+    z-index: 1;
+  }
+
+  .service-item:hover .service-emoji,
+  .service-item:hover .service-name,
+  .service-item:hover .service-detail { color: var(--yellow); }
+
+  .service-emoji {
+    font-size: 2.2rem;
+    display: block;
+    margin-bottom: 0.8rem;
+    transition: color 0.15s;
+  }
+
+  .service-name {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 900;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    margin-bottom: 0.4rem;
+    transition: color 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .service-detail {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    opacity: 0.5;
+    transition: color 0.15s;
+    line-height: 1.4;
+  }
+
+  /* MEALS CALLOUT */
+  .meals-callout {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 5rem 3rem;
+    border-bottom: 4px solid var(--black);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .meals-left .big-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 12vw, 10rem);
+    line-height: 0.85;
+    color: var(--yellow);
+    margin-bottom: 0.5rem;
+  }
+
+  .meals-left .big-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .meals-right h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    color: var(--yellow);
+  }
+
+  .meals-right p {
+    font-size: 1rem;
+    line-height: 1.7;
+    opacity: 0.85;
+    margin-bottom: 1.5rem;
+  }
+
+  .health-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--yellow);
+    color: var(--black);
+    padding: 12px 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 6px 6px 0 rgba(255,230,0,0.3);
+  }
+
+  /* VIEW SECTION */
+  .view-section {
+    padding: 6rem 3rem;
+    border-bottom: 4px solid var(--black);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .view-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .view-text-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    line-height: 0.85;
+    color: var(--black);
+    -webkit-text-stroke: 1px var(--black);
+  }
+
+  .view-text-big .outline {
+    -webkit-text-stroke: 3px var(--black);
+    color: transparent;
+  }
+
+  .view-desc {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-top: 1.5rem;
+    font-weight: 500;
+    max-width: 380px;
+  }
+
+  /* ILLUSTRATION - SKY VIEW */
+  .sky-illustration {
+    background: var(--black);
+    border: 4px solid var(--black);
+    box-shadow: var(--shadow-xl);
+    padding: 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .sky-illustration::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, #1a1a2e, #16213e, #0f3460);
+    opacity: 0.9;
+  }
+
+  .sky-stars {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(2px 2px at 20px 30px, #FFE600, transparent),
+      radial-gradient(2px 2px at 80px 60px, #FFE600, transparent),
+      radial-gradient(1px 1px at 150px 20px, #FFE600, transparent),
+      radial-gradient(2px 2px at 240px 50px, #FFE600, transparent),
+      radial-gradient(1px 1px at 310px 80px, #FFE600, transparent),
+      radial-gradient(2px 2px at 380px 30px, #FFE600, transparent),
+      radial-gradient(1px 1px at 60px 120px, #FFE600, transparent),
+      radial-gradient(2px 2px at 180px 100px, #FFE600, transparent),
+      radial-gradient(1px 1px at 280px 140px, #FFE600, transparent),
+      radial-gradient(2px 2px at 350px 120px, #FFE600, transparent);
+    opacity: 0.8;
+  }
+
+  .sky-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .sky-floor {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    color: var(--yellow);
+    line-height: 0.9;
+  }
+
+  .sky-desc {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--yellow);
+    opacity: 0.7;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+  }
+
+  /* PRICING SECTION */
+  .pricing-section {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 6rem 3rem;
+    border-bottom: 4px solid var(--black);
+  }
+
+  .pricing-header {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    color: var(--yellow);
+    line-height: 0.9;
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+
+  .pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 4px solid var(--yellow);
+    box-shadow: 10px 10px 0px var(--yellow);
+  }
+
+  .pricing-card {
+    padding: 3rem 2rem;
+    border-right: 3px solid var(--yellow);
+    position: relative;
+  }
+
+  .pricing-card:last-child { border-right: none; }
+
+  .pricing-card.featured {
+    background: var(--yellow);
+    color: var(--black);
+  }
+
+  .pc-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    display: inline-block;
+    margin-bottom: 1rem;
+    border: 2px solid var(--yellow);
+  }
+
+  .pricing-card.featured .pc-tag {
+    border-color: var(--black);
+    background: var(--black);
+    color: var(--yellow);
+  }
+
+  .pc-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .pc-price {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .pc-old {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    text-decoration: line-through;
+    opacity: 0.5;
+    margin-bottom: 1.5rem;
+  }
+
+  .pc-feature {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    line-height: 2;
+    opacity: 0.85;
+    text-transform: uppercase;
+  }
+
+  .pc-feature span {
+    opacity: 0.4;
+    margin-right: 6px;
+  }
+
+  /* REFERRAL SECTION */
+  .referral-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 4px solid var(--black);
+  }
+
+  .ref-card {
+    padding: 4rem 3rem;
+    border-right: 4px solid var(--black);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ref-card:last-child { border-right: none; }
+
+  .ref-card:nth-child(2) {
+    background: var(--black);
+    color: var(--yellow);
+  }
+
+  .ref-emoji {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+
+  .ref-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    line-height: 0.9;
+    margin-bottom: 1rem;
+  }
+
+  .ref-amount {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 4rem;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .ref-desc {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    line-height: 1.8;
+    opacity: 0.8;
+    text-transform: uppercase;
+  }
+
+  /* JOCKEY SECTION */
+  .jockey-section {
+    padding: 4rem 3rem;
+    border-bottom: 4px solid var(--black);
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    overflow: hidden;
+  }
+
+  .jockey-badge {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 2rem 3rem;
+    border: 4px solid var(--black);
+    box-shadow: var(--shadow-xl);
+    text-align: center;
+    min-width: 220px;
+    flex-shrink: 0;
+  }
+
+  .jockey-pct {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 5rem;
+    color: var(--yellow);
+    line-height: 0.9;
+  }
+
+  .jockey-off {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    opacity: 0.7;
+  }
+
+  .jockey-text h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    line-height: 0.9;
+    margin-bottom: 0.8rem;
+  }
+
+  .jockey-text p {
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 500;
+    max-width: 500px;
+  }
+
+  .exclusive-pill {
+    display: inline-block;
+    background: var(--black);
+    color: var(--yellow);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    padding: 5px 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+  }
+
+  /* LOCATION SECTION */
+  .location-section {
+    padding: 6rem 3rem;
+    border-bottom: 4px solid var(--black);
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .location-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 0.85;
+    margin-bottom: 1.5rem;
+  }
+
+  .location-title .outline {
+    -webkit-text-stroke: 2px var(--black);
+    color: transparent;
+  }
+
+  .location-address {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+    opacity: 0.7;
+  }
+
+  .map-placeholder {
+    background: var(--black);
+    border: 4px solid var(--black);
+    box-shadow: var(--shadow-xl);
+    aspect-ratio: 4/3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .map-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 40px,
+      rgba(255,230,0,0.05) 40px,
+      rgba(255,230,0,0.05) 41px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 40px,
+      rgba(255,230,0,0.05) 40px,
+      rgba(255,230,0,0.05) 41px
+    );
+  }
+
+  .map-pin {
+    font-size: 4rem;
+    position: relative;
+    z-index: 1;
+    animation: bounce 1.5s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .map-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--yellow);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    margin-top: 1rem;
+    text-align: center;
+    opacity: 0.8;
+    padding: 0 1rem;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 4rem 3rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 2px solid rgba(255,230,0,0.2);
+  }
+
+  .footer-logo {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 2.5rem;
+    color: var(--yellow);
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-tagline {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    opacity: 0.5;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-desc {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    opacity: 0.7;
+    max-width: 340px;
+  }
+
+  .footer-col h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-col a, .footer-col p {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--yellow);
+    text-decoration: none;
+    line-height: 2;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+
+  .footer-col a:hover { opacity: 1; }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    opacity: 0.4;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .footer-made {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    opacity: 0.4;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* SCROLL PROGRESS */
+  .scroll-bar {
+    position: fixed;
+    top: 68px;
+    left: 0;
+    height: 3px;
+    background: var(--black);
+    z-index: 200;
+    transition: width 0.1s;
+    width: 0%;
+  }
+
+  /* CTA SECTION */
+  .cta-section {
+    padding: 6rem 3rem;
+    text-align: center;
+    border-bottom: 4px solid var(--black);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: 'YUPPP';
+    position: absolute;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: clamp(8rem, 20vw, 18rem);
+    color: var(--black);
+    opacity: 0.04;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 0.9;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+    opacity: 0.6;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { border-right: none; border-bottom: 4px solid var(--black); }
+    .hero-right { padding: 3rem 2rem; }
+    .offers { grid-template-columns: 1fr; }
+    .offer-card { border-right: none; border-bottom: 4px solid var(--black); }
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .service-item:nth-child(4n) { border-right: 3px solid var(--black); }
+    .service-item:nth-child(2n) { border-right: none; }
+    .meals-callout { grid-template-columns: 1fr; }
+    .view-grid { grid-template-columns: 1fr; }
+    .pricing-cards { grid-template-columns: 1fr; }
+    .pricing-card { border-right: none; border-bottom: 3px solid var(--yellow); }
+    .referral-section { grid-template-columns: 1fr; }
+    .ref-card { border-right: none; border-bottom: 4px solid var(--black); }
+    .jockey-section { flex-direction: column; }
+    .location-section { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .offers .offer-card:last-child { border-bottom: none; }
+    .pricing-card:last-child { border-bottom: none; }
+    nav { padding: 0 1.2rem; }
+    .services-section, .view-section, .location-section, .cta-section { padding: 4rem 1.5rem; }
+    .meals-callout { padding: 4rem 1.5rem; }
+    .jockey-section { padding: 3rem 1.5rem; }
+    .referral-section .ref-card { padding: 3rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <span class="logo-box">YUPPP</span>
+    <span class="logo-tag">Finally a PG that doesn't suck</span>
+  </a>
+  <a href="booking.html" class="nav-cta">Book Now ↗</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <span class="hero-eyebrow">📍 Gopalpura, Jaipur</span>
+    <h1 class="hero-title">
+      <span>GOLDEN</span>
+      <span>LEAF</span>
+      <span class="outline">PG</span>
+    </h1>
+    <p class="hero-subtitle">
+      Premium living without the premium BS. <strong>9th Floor vibes</strong>, hill &amp; city views, full A/C, 4 fresh meals daily — and a hook that actually makes sense.
+    </p>
+    <div class="hero-btns">
+      <a href="booking.html" class="btn-primary">Book Now ↗</a>
+      <a href="#services" class="btn-secondary">Our Services</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="floating-tag ft1">✅ 24/7 Power Backup</div>
+    <div class="floating-tag ft2">🌄 Hill View!</div>
+    <div class="floating-tag ft3">🍽️ 4x Daily Meals</div>
+    <div class="building-wrap">
+      <div class="building-card">
+        <div class="building-name">GOLDEN LEAF</div>
+        <div class="building-sub">By Yuppp • Gopalpura</div>
+        <div class="floor-badge">9TH</div>
+        <div class="floor-label">Floor</div>
+        <div class="view-tag">🌇 Hill + City Balcony View</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-inner">
+    <span class="ticker-item">GOLDEN LEAF PG</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">GOPALPURA, JAIPUR</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">24/7 POWER BACKUP</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">4 FRESH MEALS DAILY</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">HILL + CITY VIEW</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">JOCKEY 35% OFF</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">YUPPP — FINALLY A PG THAT DOESN'T SUCK</span><span class="ticker-dot"> ✦ </span>
+    <!-- Duplicate for seamless loop -->
+    <span class="ticker-item">GOLDEN LEAF PG</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">GOPALPURA, JAIPUR</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">24/7 POWER BACKUP</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">4 FRESH MEALS DAILY</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">HILL + CITY VIEW</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">JOCKEY 35% OFF</span><span class="ticker-dot"> ✦ </span>
+    <span class="ticker-item">YUPPP — FINALLY A PG THAT DOESN'T SUCK</span><span class="ticker-dot"> ✦ </span>
+  </div>
+</div>
+
+<!-- OFFERS -->
+<section class="offers" id="offers">
+  <div class="offer-card">
+    <span class="offer-icon">🔑</span>
+    <span class="offer-tag">Limited Time</span>
+    <div class="offer-title">₹1,999<br>HOOK</div>
+    <p class="offer-desc">Book your seat for just ₹1,999 instead of ₹4,000. Lock in your spot before it's gone. No fluff. Just value.</p>
+  </div>
+  <div class="offer-card">
+    <span class="offer-icon">👫</span>
+    <span class="offer-tag">Referral Bonus</span>
+    <div class="offer-title">₹5,000<br>OFF</div>
+    <p class="offer-desc">Bring a friend &amp; get ₹5,000 off your monthly rent. The more the merrier — and the richer.</p>
+  </div>
+  <div class="offer-card">
+    <span class="offer-icon">👕</span>
+    <span class="offer-tag">Exclusive Partner</span>
+    <div class="offer-title">35%<br>JOCKEY</div>
+    <p class="offer-desc">Jockey exclusive 35% off on all articles. Because comfort starts from within, and we've got your back.</p>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="section-header">
+    <h2 class="section-title">
+      WHAT YOU<br>
+      <span class="outline">GET</span>
+    </h2>
+    <span class="section-count">17 AMENITIES INCLUDED</span>
+  </div>
+  <div class="services-grid">
+    <div class="service-item">
+      <span class="service-emoji">⚡</span>
+      <div class="service-name">24×7 Power Backup</div>
+      <div class="service-detail">Zero downtime. Ever.</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">🛡️</span>
+      <div class="service-name">Security Guard</div>
+      <div class="service-detail">Round-the-clock protection</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">📷</span>
+      <div class="service-name">CCTV Surveillance</div>
+      <div class="service-detail">Full premises covered</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">🚗</span>
+      <div class="service-name">Parking</div>
+      <div class="service-detail">Two-wheeler & four-wheeler</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">🛗</span>
+      <div class="service-name">High Speed Elevator</div>
+      <div class="service-detail">9th floor, no sweat</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">🌄</span>
+      <div class="service-name">Hill &amp; City View</div>
+      <div class="service-detail">Balcony — 9th floor bliss</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">🔬</span>
+      <div class="service-name">Scientifically Designed</div>
+      <div class="service-detail">Ergonomic &amp; thoughtful spaces</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">🎮</span>
+      <div class="service-name">Fun Zone</div>
+      <div class="service-detail">Chill, play, decompress</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">❄️</span>
+      <div class="service-name">Full Air Conditioned</div>
+      <div class="service-detail">Every room, every hour</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">👕</span>
+      <div class="service-name">Free Laundry</div>
+      <div class="service-detail">Included, no extra charge</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">📶</span>
+      <div class="service-name">High Speed WiFi</div>
+      <div class="service-detail">Stream, work, game — sorted</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">🫧</span>
+      <div class="service-name">Free Utensil Washing</div>
+      <div class="service-detail">Because dishes are annoying</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">🍽️</span>
+      <div class="service-name">4× Fresh Meals</div>
+      <div class="service-detail">Daily. Fresh. Every time.</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">🧹</span>
+      <div class="service-name">Daily Cleaning</div>
+      <div class="service-detail">Your space, always spotless</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">🍎</span>
+      <div class="service-name">Daily Fruit</div>
+      <div class="service-detail">Included. No extra cost.</div>
+    </div>
+    <div class="service-item">
+      <span class="service-emoji">🥗</span>
+      <div class="service-name">Customised Meals</div>
+      <div class="service-detail">Allergy-safe prep for you</div>
+    </div>
+  </div>
+</section>
+
+<!-- MEALS CALLOUT -->
+<section class="meals-callout">
+  <div class="meals-left">
+    <div class="big-number">4×</div>
+    <div class="big-label">Fresh Meals Daily</div>
+  </div>
+  <div class="meals-right">
+    <h3>WE CARE<br>ABOUT YOUR<br>HEALTH</h3>
+    <p>Tell us your food allergies during admission, and we will prepare a <strong style="background:rgba(255,230,0,0.2);padding:1px 4px;">separate meal just for you.</strong> No compromise on your wellbeing. Plus a fruit every single day.</p>
+    <span class="health-badge">🥦 Customised Meals on Request</span>
+  </div>
+</section>
+
+<!-- VIEW -->
+<section class="view-section">
+  <div class="view-grid">
+    <div>
+      <div class="view-text-big">
+        9TH<br>
+        <span class="outline">FLOOR</span><br>
+        VIEW
+      </div>
+      <p class="view-desc">Step onto your balcony and take in a sweeping panorama of Jaipur's hills and city skyline. Living on the 9th floor at Golden Leaf isn't just a room — it's a vantage point.</p>
+    </div>
+    <div class="sky-illustration">
+      <div class="sky-stars"></div>
+      <div class="sky-content">
+        <div class="sky-floor">9TH FLOOR</div>
+        <div class="sky-desc">🏔️ Hill View &nbsp;·&nbsp; 🏙️ City View &nbsp;·&nbsp; 🌅 Balcony</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <h2 class="pricing-header">KILLER<br>PRICING</h2>
+  <div class="pricing-cards">
+    <div class="pricing-card">
+      <span class="pc-tag">Advance Hook</span>
+      <div class="pc-title">Book Your Spot</div>
+      <div class="pc-price">₹1,999</div>
+      <div class="pc-old">Was ₹4,000</div>
+      <div class="pc-feature">
+        <div><span>✦</span> Lock in your bed</div>
+        <div><span>✦</span> Refundable advance</div>
+        <div><span>✦</span> Priority allocation</div>
+        <div><span>✦</span> Beat the queue</div>
+      </div>
+    </div>
+    <div class="pricing-card featured">
+      <span class="pc-tag">Best Deal</span>
+      <div class="pc-title">Bring a Friend</div>
+      <div class="pc-price">₹5,000 OFF</div>
+      <div class="pc-old">Monthly Rent Discount</div>
+      <div class="pc-feature">
+        <div><span>✦</span> Per referral, per month</div>
+        <div><span>✦</span> No cap on savings</div>
+        <div><span>✦</span> Your friend wins too</div>
+        <div><span>✦</span> Squad goals, literally</div>
+      </div>
+    </div>
+    <div class="pricing-card">
+      <span class="pc-tag">Jockey Exclusive</span>
+      <div class="pc-title">Lifestyle Bonus</div>
+      <div class="pc-price">35% OFF</div>
+      <div class="pc-old">On All Jockey Articles</div>
+      <div class="pc-feature">
+        <div><span>✦</span> All categories included</div>
+        <div><span>✦</span> Exclusive to residents</div>
+        <div><span>✦</span> No minimum order</div>
+        <div><span>✦</span> Comfort, sorted</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REFERRAL -->
+<section class="referral-section">
+  <div class="ref-card">
+    <span class="ref-emoji">🤝</span>
+    <div class="ref-title">BRING A<br>FRIEND</div>
+    <div class="ref-amount">₹5,000</div>
+    <div class="ref-desc">OFF on your monthly rent<br>for every friend you bring in<br>Start saving immediately</div>
+  </div>
+  <div class="ref-card">
+    <span class="ref-emoji">🎁</span>
+    <div class="ref-title">YOUR FRIEND<br>WINS TOO</div>
+    <div class="ref-amount">WIN-WIN</div>
+    <div class="ref-desc">They get a great PG.<br>You save big.<br>That's what friends are for.</div>
+  </div>
+</section>
+
+<!-- JOCKEY -->
+<section class="jockey-section">
+  <div class="jockey-badge">
+    <div class="jockey-pct">35%</div>
+    <div class="jockey-off">OFF</div>
+  </div>
+  <div class="jockey-text">
+    <span class="exclusive-pill">✦ Resident Exclusive</span>
+    <h3>JOCKEY FOR LESS</h3>
+    <p>As a Yuppp resident at Golden Leaf, you get 35% off on all Jockey articles. Briefs, tees, loungewear — all of it. Because comfort isn't just in your room, it's in what you wear.</p>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section class="location-section" id="contact">
+  <div>
+    <h2 class="location-title">
+      FIND<br>
+      <span class="outline">US</span><br>
+      HERE
+    </h2>
+    <div class="location-address">
+      📍 Golden Leaf PG<br>
+      9th Floor, Gopalpura<br>
+      Jaipur, Rajasthan<br>
+      ──────────────<br>
+      📞 Contact us to book<br>
+      🕐 Open for visits: Anytime
+    </div>
+    <a href="tel:+91" class="btn-primary">Call to Book ↗</a>
+  </div>
+  <div class="map-placeholder">
+    <div class="map-pin">📍</div>
+    <div class="map-label">Golden Leaf PG<br>Gopalpura, Jaipur<br>9th Floor ✦ Hill + City View</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="cta-title">DON'T WAIT.<br>BOOK NOW.</h2>
+  <div class="cta-sub">Limited seats. Real amenities. Zero BS.</div>
+  <div class="cta-btns">
+    <a href="booking.html" class="btn-primary">🔒 Book Now ↗</a>
+    <a href="#offers" class="btn-secondary">View All Offers</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">YUPPP</div>
+      <div class="footer-tagline">Finally a PG that doesn't suck</div>
+      <p class="footer-desc">Premium managed PG accommodations designed for the modern resident. Gopalpura Golden Leaf is our first property — and we're just getting started.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Property</h4>
+      <p>Gopalpura Golden Leaf</p>
+      <p>9th Floor</p>
+      <p>Jaipur, Rajasthan</p>
+    </div>
+    <div class="footer-col">
+      <h4>Offers</h4>
+      <p>₹1,999 Advance Hook</p>
+      <p>₹5,000 Referral Off</p>
+      <p>35% Jockey Discount</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 Yuppp. All rights reserved.</div>
+    <div class="footer-made">Made with ⚡ in Jaipur</div>
+  </div>
+</footer>
+
+<script>
+  // Scroll progress bar
+  window.addEventListener('scroll', () => {
+    const el = document.getElementById('scrollBar');
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (scrollTop / docHeight) * 100;
+    el.style.width = pct + '%';
+  });
+
+  // Intersection observer for cards
+  const cards = document.querySelectorAll('.service-item, .offer-card, .pricing-card, .ref-card');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }, i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  cards.forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transition = 'opacity 0.4s ease, transform 0.4s ease, background 0.15s';
+    observer.observe(card);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Your Spot — YUPPP Golden Leaf</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFE600;
+    --black: #0A0A0A;
+    --white: #FAFAFA;
+    --border: 3px solid #0A0A0A;
+    --shadow: 6px 6px 0px #0A0A0A;
+    --shadow-lg: 10px 10px 0px #0A0A0A;
+    --shadow-xl: 14px 14px 0px #0A0A0A;
+    --red: #FF3B3B;
+    --green: #00C851;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--yellow);
+    color: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* NOISE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--yellow);
+    border-bottom: 4px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 64px;
+  }
+
+  .logo {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 1.8rem;
+    color: var(--black);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .logo-box {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 2px 10px 4px;
+    display: inline-block;
+    transform: rotate(-2deg);
+  }
+
+  .back-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--black);
+    border: 3px solid var(--black);
+    padding: 8px 16px;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .back-btn:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-lg);
+    background: var(--black);
+    color: var(--yellow);
+  }
+
+  /* LAYOUT */
+  .page-wrap {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    min-height: calc(100vh - 64px);
+    border-top: none;
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    padding: 4rem 3rem;
+    border-right: 4px solid var(--black);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow: hidden;
+  }
+
+  .left-top {}
+
+  .eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: var(--black);
+    color: var(--yellow);
+    padding: 5px 12px;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .left-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    line-height: 0.88;
+    margin-bottom: 2rem;
+  }
+
+  .left-title .outline {
+    -webkit-text-stroke: 2px var(--black);
+    color: transparent;
+  }
+
+  /* PERKS LIST */
+  .perks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .perk-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 2px solid var(--black);
+    padding: 10px 14px;
+    background: var(--yellow);
+    box-shadow: 3px 3px 0 var(--black);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .perk-row:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--black);
+  }
+
+  .perk-row .perk-icon { font-size: 1.2rem; }
+
+  /* HOOK CALLOUT */
+  .hook-callout {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 1.5rem;
+    border: 4px solid var(--black);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .hook-amount {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 2.8rem;
+    line-height: 1;
+    color: var(--yellow);
+  }
+
+  .hook-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 0.3rem;
+  }
+
+  .hook-old {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    text-decoration: line-through;
+    opacity: 0.4;
+  }
+
+  .hook-save {
+    background: var(--yellow);
+    color: var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  /* LEFT BOTTOM DECO */
+  .left-deco {
+    position: absolute;
+    bottom: -2rem;
+    right: -1rem;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 8rem;
+    color: var(--black);
+    opacity: 0.05;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* RIGHT PANEL — FORM */
+  .right-panel {
+    background: var(--white);
+    border-left: 4px solid var(--black);
+    overflow-y: auto;
+  }
+
+  /* STEP INDICATOR */
+  .step-bar {
+    background: var(--black);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-bottom: 3px solid var(--yellow);
+  }
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border: 2px solid rgba(255,230,0,0.3);
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: rgba(255,230,0,0.4);
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .step-num.active {
+    background: var(--yellow);
+    border-color: var(--yellow);
+    color: var(--black);
+  }
+
+  .step-num.done {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--white);
+  }
+
+  .step-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,230,0,0.4);
+    transition: color 0.3s;
+  }
+
+  .step-item.active .step-label { color: var(--yellow); }
+  .step-item.done .step-label { color: rgba(0,200,81,0.8); }
+
+  .step-sep {
+    width: 20px;
+    height: 2px;
+    background: rgba(255,230,0,0.15);
+    flex-shrink: 0;
+    margin: 0 0.3rem;
+  }
+
+  /* FORM */
+  .form-wrap {
+    padding: 2.5rem 2rem;
+  }
+
+  .form-step { display: none; }
+  .form-step.active { display: block; }
+
+  .step-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+    color: var(--black);
+  }
+
+  .step-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin-bottom: 2rem;
+  }
+
+  /* FIELD GROUP */
+  .field-group {
+    margin-bottom: 1.4rem;
+  }
+
+  label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--black);
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+  }
+
+  label span.req {
+    color: var(--red);
+    margin-left: 2px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    background: var(--yellow);
+    border: 3px solid var(--black);
+    color: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 12px 14px;
+    outline: none;
+    box-shadow: 4px 4px 0 var(--black);
+    transition: box-shadow 0.15s, transform 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: rgba(10,10,10,0.35);
+    font-weight: 500;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    box-shadow: 6px 6px 0 var(--black);
+    transform: translate(-1px, -1px);
+  }
+
+  input.error, select.error, textarea.error {
+    border-color: var(--red);
+    box-shadow: 4px 4px 0 var(--red);
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230A0A0A' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  textarea { resize: vertical; min-height: 90px; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .error-msg {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--red);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: none;
+  }
+
+  .error-msg.show { display: block; }
+
+  /* RADIO CARDS */
+  .radio-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  .radio-card {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .radio-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .radio-label {
+    display: block;
+    border: 3px solid var(--black);
+    padding: 1rem;
+    box-shadow: 4px 4px 0 var(--black);
+    transition: all 0.15s;
+    background: var(--yellow);
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .radio-label:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--black);
+  }
+
+  .radio-card input:checked + .radio-label {
+    background: var(--black);
+    color: var(--yellow);
+    transform: translate(-3px, -3px);
+    box-shadow: 7px 7px 0 rgba(0,0,0,0.3);
+  }
+
+  .radio-label .rc-icon {
+    display: block;
+    font-size: 1.8rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .radio-label .rc-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .radio-label .rc-sub {
+    font-size: 0.7rem;
+    opacity: 0.6;
+  }
+
+  /* CHECKBOX */
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    cursor: pointer;
+    padding: 0.8rem;
+    border: 2px solid transparent;
+    transition: border-color 0.15s;
+  }
+
+  .checkbox-item:hover { border-color: var(--black); }
+
+  .checkbox-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    accent-color: var(--black);
+    cursor: pointer;
+  }
+
+  .checkbox-item .cb-text {
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .checkbox-item .cb-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    opacity: 0.5;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+    display: block;
+  }
+
+  /* SECTION DIVIDER IN FORM */
+  .form-divider {
+    border: none;
+    border-top: 2px dashed rgba(10,10,10,0.15);
+    margin: 1.8rem 0;
+  }
+
+  .form-section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin-bottom: 1rem;
+  }
+
+  /* OFFER TOGGLES */
+  .offer-toggle {
+    border: 3px solid var(--black);
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    box-shadow: 4px 4px 0 var(--black);
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--yellow);
+  }
+
+  .offer-toggle:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--black);
+  }
+
+  .offer-toggle.selected {
+    background: var(--black);
+    color: var(--yellow);
+  }
+
+  .ot-left { display: flex; align-items: center; gap: 0.8rem; }
+  .ot-icon { font-size: 1.4rem; }
+
+  .ot-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+  }
+
+  .ot-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  .ot-check {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 900;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .offer-toggle.selected .ot-check {
+    background: var(--yellow);
+    color: var(--black);
+    border-color: var(--yellow);
+  }
+
+  /* SUMMARY CARD */
+  .summary-card {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .summary-card h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,230,0,0.2);
+    padding-bottom: 0.6rem;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    line-height: 1.8;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(255,230,0,0.08);
+  }
+
+  .summary-row .sr-key { opacity: 0.55; text-transform: uppercase; }
+  .summary-row .sr-val { text-align: right; opacity: 0.9; font-weight: 700; }
+
+  .summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 2px solid var(--yellow);
+  }
+
+  .summary-total .st-key {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .summary-total .st-val {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 2rem;
+    color: var(--yellow);
+    line-height: 1;
+  }
+
+  /* NAV BUTTONS */
+  .form-nav {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 3px dashed rgba(10,10,10,0.15);
+  }
+
+  .btn-next {
+    background: var(--black);
+    color: var(--yellow);
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow);
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    flex: 1;
+    text-align: center;
+  }
+
+  .btn-next:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .btn-next:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--shadow);
+  }
+
+  .btn-prev {
+    background: transparent;
+    color: var(--black);
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow);
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  }
+
+  .btn-prev:hover {
+    background: var(--black);
+    color: var(--yellow);
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* SUCCESS SCREEN */
+  #success-screen {
+    display: none;
+    padding: 3rem 2rem;
+    text-align: center;
+    min-height: calc(100vh - 64px - 52px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .success-emoji {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 1.5rem;
+    animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  @keyframes pop {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    line-height: 0.9;
+    margin-bottom: 0.8rem;
+    color: var(--black);
+  }
+
+  .success-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 2rem;
+  }
+
+  .success-card {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 2rem;
+    border: 4px solid var(--black);
+    box-shadow: var(--shadow-xl);
+    text-align: left;
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto 2rem;
+  }
+
+  .success-card h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,230,0,0.2);
+    padding-bottom: 0.6rem;
+  }
+
+  .success-detail {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    line-height: 2.2;
+    opacity: 0.8;
+  }
+
+  .success-detail strong { opacity: 1; color: var(--yellow); }
+
+  .confetti-row {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5rem;
+    animation: wave 1s ease-in-out infinite;
+  }
+
+  @keyframes wave {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+
+  /* LOADING SPINNER */
+  .spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--yellow);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* MOBILE */
+  @media (max-width: 800px) {
+    .page-wrap {
+      grid-template-columns: 1fr;
+    }
+
+    .left-panel {
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 4px solid var(--black);
+      padding: 2.5rem 1.5rem;
+    }
+
+    .left-deco { display: none; }
+
+    .right-panel {
+      border-left: none;
+    }
+
+    .field-row { grid-template-columns: 1fr; }
+    .radio-cards { grid-template-columns: 1fr 1fr; }
+
+    nav { padding: 0 1rem; }
+    .form-wrap { padding: 2rem 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <span class="logo-box">YUPPP</span>
+  </a>
+  <a href="index.html" class="back-btn">← Back to Home</a>
+</nav>
+
+<!-- MAIN LAYOUT -->
+<div class="page-wrap">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="left-top">
+      <span class="eyebrow">📍 Gopalpura, Jaipur</span>
+      <h1 class="left-title">
+        LOCK IN<br>YOUR<br><span class="outline">SPOT</span>
+      </h1>
+
+      <div class="perks-list">
+        <div class="perk-row"><span class="perk-icon">⚡</span> 24×7 Power Backup</div>
+        <div class="perk-row"><span class="perk-icon">🍽️</span> 4× Fresh Meals Daily</div>
+        <div class="perk-row"><span class="perk-icon">❄️</span> Fully Air Conditioned</div>
+        <div class="perk-row"><span class="perk-icon">🌄</span> 9th Floor Hill View</div>
+        <div class="perk-row"><span class="perk-icon">📶</span> High Speed WiFi</div>
+      </div>
+
+      <div class="hook-callout">
+        <div>
+          <div class="hook-label">Advance Booking Hook</div>
+          <div class="hook-amount">₹1,999</div>
+          <div class="hook-old">Instead of ₹4,000</div>
+          <span class="hook-save">You save ₹2,001 🎉</span>
+        </div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--yellow);opacity:0.4;line-height:1.3;">SECURE<br>YOUR<br>ROOM</div>
+      </div>
+    </div>
+
+    <div class="left-deco">YUPPP</div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <!-- STEP BAR -->
+    <div class="step-bar" id="step-bar">
+      <div class="step-item active" id="si-1">
+        <div class="step-num active" id="sn-1">1</div>
+        <span class="step-label">You</span>
+      </div>
+      <div class="step-sep"></div>
+      <div class="step-item" id="si-2">
+        <div class="step-num" id="sn-2">2</div>
+        <span class="step-label">Stay</span>
+      </div>
+      <div class="step-sep"></div>
+      <div class="step-item" id="si-3">
+        <div class="step-num" id="sn-3">3</div>
+        <span class="step-label">Offers</span>
+      </div>
+      <div class="step-sep"></div>
+      <div class="step-item" id="si-4">
+        <div class="step-num" id="sn-4">4</div>
+        <span class="step-label">Confirm</span>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="form-wrap" id="form-wrap">
+
+      <!-- STEP 1: Personal Info -->
+      <div class="form-step active" id="step-1">
+        <div class="step-heading">ABOUT YOU</div>
+        <div class="step-sub">Tell us who's booking</div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" id="f-name" placeholder="Your full name">
+            <div class="error-msg" id="err-name">Name is required</div>
+          </div>
+          <div class="field-group">
+            <label>Age <span class="req">*</span></label>
+            <input type="number" id="f-age" placeholder="e.g. 22" min="16" max="60">
+            <div class="error-msg" id="err-age">Please enter a valid age</div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Phone Number <span class="req">*</span></label>
+          <input type="tel" id="f-phone" placeholder="+91 98765 43210" maxlength="15">
+          <div class="error-msg" id="err-phone">Valid phone number required</div>
+        </div>
+
+        <div class="field-group">
+          <label>Email Address</label>
+          <input type="email" id="f-email" placeholder="you@email.com">
+          <div class="error-msg" id="err-email">Enter a valid email</div>
+        </div>
+
+        <div class="field-group">
+          <label>Occupation <span class="req">*</span></label>
+          <select id="f-occ">
+            <option value="">Select your occupation</option>
+            <option value="student">🎓 Student</option>
+            <option value="working">💼 Working Professional</option>
+            <option value="freelancer">💻 Freelancer</option>
+            <option value="other">✦ Other</option>
+          </select>
+          <div class="error-msg" id="err-occ">Please select your occupation</div>
+        </div>
+
+        <div class="field-group">
+          <label>City you're coming from</label>
+          <input type="text" id="f-city" placeholder="e.g. Delhi, Mumbai...">
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-next" onclick="nextStep(1)">Continue → Your Stay</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Stay Details -->
+      <div class="form-step" id="step-2">
+        <div class="step-heading">YOUR STAY</div>
+        <div class="step-sub">Tell us when and how</div>
+
+        <div class="field-group">
+          <label>Move-in Date <span class="req">*</span></label>
+          <input type="date" id="f-date">
+          <div class="error-msg" id="err-date">Please select a move-in date</div>
+        </div>
+
+        <div class="field-group">
+          <label>Room Type Preference <span class="req">*</span></label>
+          <div class="radio-cards">
+            <label class="radio-card">
+              <input type="radio" name="room" value="single" id="r-single">
+              <span class="radio-label">
+                <span class="rc-icon">🛏️</span>
+                <span class="rc-title">Single</span>
+                <span class="rc-sub">Private room</span>
+              </span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="room" value="double" id="r-double">
+              <span class="radio-label">
+                <span class="rc-icon">🛏️🛏️</span>
+                <span class="rc-title">Double</span>
+                <span class="rc-sub">Shared, 2-person</span>
+              </span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="room" value="triple" id="r-triple">
+              <span class="radio-label">
+                <span class="rc-icon">👥</span>
+                <span class="rc-title">Triple</span>
+                <span class="rc-sub">Shared, 3-person</span>
+              </span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="room" value="any" id="r-any">
+              <span class="radio-label">
+                <span class="rc-icon">🎲</span>
+                <span class="rc-title">Any</span>
+                <span class="rc-sub">Best available</span>
+              </span>
+            </label>
+          </div>
+          <div class="error-msg" id="err-room">Please select a room type</div>
+        </div>
+
+        <div class="field-group">
+          <label>Estimated Duration</label>
+          <select id="f-dur">
+            <option value="">How long do you plan to stay?</option>
+            <option value="1month">1 Month</option>
+            <option value="3months">2–3 Months</option>
+            <option value="6months">4–6 Months</option>
+            <option value="1year">6–12 Months</option>
+            <option value="long">1 Year+</option>
+          </select>
+        </div>
+
+        <hr class="form-divider">
+        <div class="form-section-label">Dietary Preferences (for meal customisation)</div>
+
+        <div class="field-group">
+          <label>Food Type</label>
+          <select id="f-food">
+            <option value="">Select food preference</option>
+            <option value="veg">🥦 Pure Vegetarian</option>
+            <option value="nonveg">🍗 Non-Vegetarian</option>
+            <option value="eggetarian">🥚 Eggetarian</option>
+            <option value="jain">🌿 Jain</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label>Food Allergies / Special Requirements</label>
+          <textarea id="f-allergy" placeholder="e.g. peanut allergy, gluten-free, lactose intolerant... We'll make sure your meals are always safe for you."></textarea>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-prev" onclick="prevStep(2)">← Back</button>
+          <button class="btn-next" onclick="nextStep(2)">Continue → Offers</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Offers -->
+      <div class="form-step" id="step-3">
+        <div class="step-heading">YOUR OFFERS</div>
+        <div class="step-sub">Pick the deals you want</div>
+
+        <div style="margin-bottom:1.5rem;">
+          <div class="form-section-label">Active Offers — Select All That Apply</div>
+
+          <div class="offer-toggle selected" id="ot-hook" onclick="toggleOffer('hook')">
+            <div class="ot-left">
+              <span class="ot-icon">🔑</span>
+              <div>
+                <span class="ot-title">Advance Hook Deal</span>
+                <span class="ot-val">₹1,999 <span style="font-family:'Space Mono',sans-serif;font-size:0.65rem;text-decoration:line-through;opacity:0.5;">₹4,000</span></span>
+              </div>
+            </div>
+            <div class="ot-check" id="oc-hook">✓</div>
+          </div>
+
+          <div class="offer-toggle" id="ot-ref" onclick="toggleOffer('ref')">
+            <div class="ot-left">
+              <span class="ot-icon">👫</span>
+              <div>
+                <span class="ot-title">Bring a Friend</span>
+                <span class="ot-val">₹5,000 OFF / month</span>
+              </div>
+            </div>
+            <div class="ot-check" id="oc-ref"></div>
+          </div>
+
+          <div class="offer-toggle" id="ot-jockey" onclick="toggleOffer('jockey')">
+            <div class="ot-left">
+              <span class="ot-icon">👕</span>
+              <div>
+                <span class="ot-title">Jockey Exclusive</span>
+                <span class="ot-val">35% Off All Articles</span>
+              </div>
+            </div>
+            <div class="ot-check" id="oc-jockey"></div>
+          </div>
+        </div>
+
+        <div class="field-group" id="ref-field" style="display:none;">
+          <label>Friend's Name (for referral) <span class="req">*</span></label>
+          <input type="text" id="f-refname" placeholder="Your friend's full name">
+        </div>
+
+        <div class="field-group" id="ref-phone-field" style="display:none;">
+          <label>Friend's Phone Number <span class="req">*</span></label>
+          <input type="tel" id="f-refphone" placeholder="+91 98765 43210">
+        </div>
+
+        <hr class="form-divider">
+
+        <div class="field-group">
+          <label>How did you hear about us?</label>
+          <select id="f-source">
+            <option value="">Select one</option>
+            <option value="friend">👫 Friend / Referral</option>
+            <option value="instagram">📸 Instagram</option>
+            <option value="google">🔍 Google Search</option>
+            <option value="college">🏫 College Notice Board</option>
+            <option value="other">✦ Other</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label>Anything else you'd like us to know?</label>
+          <textarea id="f-notes" placeholder="Any special requests, questions, or just a hello 👋"></textarea>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-prev" onclick="prevStep(3)">← Back</button>
+          <button class="btn-next" onclick="nextStep(3)">Review Booking →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Review & Confirm -->
+      <div class="form-step" id="step-4">
+        <div class="step-heading">CONFIRM IT</div>
+        <div class="step-sub">Review your booking details</div>
+
+        <div class="summary-card" id="summary-card">
+          <h4>📋 YOUR BOOKING SUMMARY</h4>
+          <div id="summary-body">
+            <!-- filled by JS -->
+          </div>
+          <div class="summary-total">
+            <span class="st-key">Advance to Pay</span>
+            <span class="st-val" id="summary-total-val">₹1,999</span>
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <label class="checkbox-item">
+            <input type="checkbox" id="c-terms">
+            <div class="cb-text">
+              I agree to the terms & conditions
+              <span class="cb-sub">Non-refundable advance. Full payment on move-in.</span>
+            </div>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="c-rules">
+            <div class="cb-text">
+              I understand the house rules
+              <span class="cb-sub">No guests after 11PM, common areas to be kept clean.</span>
+            </div>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="c-whatsapp">
+            <div class="cb-text">
+              📱 Send me updates on WhatsApp
+              <span class="cb-sub">Move-in reminders, meal menus & offers. (Optional)</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="error-msg show" id="err-terms" style="display:none;margin-top:0.5rem;">Please accept the terms and house rules</div>
+
+        <div id="submit-error" style="display:none;font-family:'Space Mono',monospace;font-size:0.7rem;color:#FF3B3B;background:#fff0f0;border:2px solid #FF3B3B;padding:10px 14px;margin-top:1rem;letter-spacing:1px;text-transform:uppercase;"></div>
+
+        <div class="form-nav">
+          <button class="btn-prev" onclick="prevStep(4)">← Back</button>
+          <button class="btn-next" id="submit-btn" onclick="submitBooking()">🔒 Confirm & Book</button>
+        </div>
+      </div>
+
+    </div><!-- end form-wrap -->
+
+    <!-- SUCCESS -->
+    <div id="success-screen">
+      <div class="confetti-row">🎉 🏠 ⚡ 🎉</div>
+      <span class="success-emoji">✅</span>
+      <div class="success-title">YOU'RE IN!</div>
+      <div class="success-sub">Booking Confirmed • Golden Leaf PG</div>
+
+      <div class="success-card">
+        <h4>🏠 Booking Details</h4>
+        <div class="success-detail" id="success-detail">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <p style="font-family:'Space Mono',monospace;font-size:0.72rem;opacity:0.55;letter-spacing:1px;text-transform:uppercase;max-width:320px;line-height:1.8;">
+        Our team will call you within 24 hours to confirm your room and payment details.
+      </p>
+    </div>
+
+  </div><!-- end right-panel -->
+</div>
+
+<script>
+  let currentStep = 1;
+  const totalSteps = 4;
+  const offers = { hook: true, ref: false, jockey: false };
+
+  // Set min date on date input
+  document.addEventListener('DOMContentLoaded', () => {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('f-date').min = today;
+  });
+
+  function updateStepBar(step) {
+    for (let i = 1; i <= totalSteps; i++) {
+      const si = document.getElementById(`si-${i}`);
+      const sn = document.getElementById(`sn-${i}`);
+      si.classList.remove('active', 'done');
+      sn.classList.remove('active', 'done');
+      if (i < step) {
+        si.classList.add('done');
+        sn.classList.add('done');
+        sn.textContent = '✓';
+      } else if (i === step) {
+        si.classList.add('active');
+        sn.classList.add('active');
+        sn.textContent = i;
+      } else {
+        sn.textContent = i;
+      }
+    }
+  }
+
+  function showStep(n) {
+    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+    document.getElementById(`step-${n}`).classList.add('active');
+    updateStepBar(n);
+    document.querySelector('.right-panel').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function validateStep1() {
+    let ok = true;
+    const name = document.getElementById('f-name').value.trim();
+    const age = document.getElementById('f-age').value;
+    const phone = document.getElementById('f-phone').value.trim();
+    const occ = document.getElementById('f-occ').value;
+    const email = document.getElementById('f-email').value.trim();
+
+    clearErrors(['name','age','phone','occ','email']);
+
+    if (!name) { showErr('name', 'err-name'); ok = false; }
+    if (!age || age < 16 || age > 70) { showErr('age', 'err-age'); ok = false; }
+    if (!phone || phone.replace(/\D/g,'').length < 10) { showErr('phone', 'err-phone'); ok = false; }
+    if (!occ) { showErr('occ', 'err-occ'); ok = false; }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr('email', 'err-email'); ok = false; }
+
+    return ok;
+  }
+
+  function validateStep2() {
+    let ok = true;
+    const date = document.getElementById('f-date').value;
+    const room = document.querySelector('input[name="room"]:checked');
+
+    clearErrors(['date', 'room']);
+
+    if (!date) { showErr('date', 'err-date'); ok = false; }
+    if (!room) { showErr('room', 'err-room'); ok = false; }
+
+    return ok;
+  }
+
+  function validateStep4() {
+    const terms = document.getElementById('c-terms').checked;
+    const rules = document.getElementById('c-rules').checked;
+    const errEl = document.getElementById('err-terms');
+    if (!terms || !rules) {
+      errEl.style.display = 'block';
+      return false;
+    }
+    errEl.style.display = 'none';
+    return true;
+  }
+
+  function showErr(fieldId, errId) {
+    const field = document.getElementById(`f-${fieldId}`);
+    const err = document.getElementById(errId);
+    if (field) field.classList.add('error');
+    if (err) err.classList.add('show');
+  }
+
+  function clearErrors(fields) {
+    fields.forEach(f => {
+      const el = document.getElementById(`f-${f}`);
+      if (el) el.classList.remove('error');
+    });
+    document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('show'));
+  }
+
+  function nextStep(from) {
+    let valid = true;
+    if (from === 1) valid = validateStep1();
+    if (from === 2) valid = validateStep2();
+    if (from === 3) { buildSummary(); }
+
+    if (!valid) return;
+
+    currentStep = from + 1;
+    showStep(currentStep);
+  }
+
+  function prevStep(from) {
+    currentStep = from - 1;
+    showStep(currentStep);
+  }
+
+  function toggleOffer(type) {
+    offers[type] = !offers[type];
+    const toggle = document.getElementById(`ot-${type}`);
+    const check = document.getElementById(`oc-${type}`);
+    toggle.classList.toggle('selected', offers[type]);
+    check.textContent = offers[type] ? '✓' : '';
+
+    if (type === 'ref') {
+      document.getElementById('ref-field').style.display = offers.ref ? 'block' : 'none';
+      document.getElementById('ref-phone-field').style.display = offers.ref ? 'block' : 'none';
+    }
+  }
+
+  function buildSummary() {
+    const name = document.getElementById('f-name').value.trim();
+    const phone = document.getElementById('f-phone').value.trim();
+    const occ = document.getElementById('f-occ').value;
+    const date = document.getElementById('f-date').value;
+    const room = document.querySelector('input[name="room"]:checked');
+    const dur = document.getElementById('f-dur').value;
+    const food = document.getElementById('f-food').value;
+    const allergy = document.getElementById('f-allergy').value.trim();
+
+    const roomLabel = room ? room.value.charAt(0).toUpperCase() + room.value.slice(1) : '—';
+    const foodMap = { veg: 'Vegetarian', nonveg: 'Non-Vegetarian', eggetarian: 'Eggetarian', jain: 'Jain', '': '—' };
+    const durMap = { '1month': '1 Month', '3months': '2–3 Months', '6months': '4–6 Months', '1year': '6–12 Months', 'long': '1 Year+', '': '—' };
+    const occMap = { student: 'Student', working: 'Working Professional', freelancer: 'Freelancer', other: 'Other', '': '—' };
+
+    const activeOffers = [];
+    if (offers.hook) activeOffers.push('₹1,999 Hook (Save ₹2,001)');
+    if (offers.ref) activeOffers.push('₹5,000 Friend Referral');
+    if (offers.jockey) activeOffers.push('35% Jockey Discount');
+
+    const totalVal = offers.hook ? '₹1,999' : '₹4,000';
+    document.getElementById('summary-total-val').textContent = totalVal;
+
+    document.getElementById('summary-body').innerHTML = `
+      <div class="summary-row"><span class="sr-key">Name</span><span class="sr-val">${name}</span></div>
+      <div class="summary-row"><span class="sr-key">Phone</span><span class="sr-val">${phone}</span></div>
+      <div class="summary-row"><span class="sr-key">Occupation</span><span class="sr-val">${occMap[occ]}</span></div>
+      <div class="summary-row"><span class="sr-key">Move-in Date</span><span class="sr-val">${date || '—'}</span></div>
+      <div class="summary-row"><span class="sr-key">Room Type</span><span class="sr-val">${roomLabel}</span></div>
+      <div class="summary-row"><span class="sr-key">Duration</span><span class="sr-val">${durMap[dur]}</span></div>
+      <div class="summary-row"><span class="sr-key">Food</span><span class="sr-val">${foodMap[food]}</span></div>
+      ${allergy ? `<div class="summary-row"><span class="sr-key">Allergies</span><span class="sr-val">${allergy}</span></div>` : ''}
+      <div class="summary-row"><span class="sr-key">Offers</span><span class="sr-val">${activeOffers.join('<br>') || 'None selected'}</span></div>
+    `;
+
+    // also prepare success detail
+    document.getElementById('success-detail').innerHTML = `
+      <strong>Name:</strong> ${name}<br>
+      <strong>Phone:</strong> ${phone}<br>
+      <strong>Move-in:</strong> ${date}<br>
+      <strong>Room:</strong> ${roomLabel}<br>
+      <strong>Advance:</strong> ${totalVal}<br>
+      <strong>Offers:</strong> ${activeOffers.join(', ') || 'None'}
+    `;
+  }
+
+  // ── Backend URL — change this to your deployed server ──
+  const API_URL = 'http://localhost:3001/api/booking';
+  // e.g. 'https://api.yuppp.in/api/booking' in production
+
+  async function submitBooking() {
+    if (!validateStep4()) return;
+
+    const btn = document.getElementById('submit-btn');
+    btn.innerHTML = '<div class="spinner" style="display:inline-block;margin:0 auto;"></div>';
+    btn.disabled = true;
+
+    const payload = {
+      name:           document.getElementById('f-name').value.trim(),
+      age:            document.getElementById('f-age').value,
+      phone:          document.getElementById('f-phone').value.trim(),
+      email:          document.getElementById('f-email').value.trim(),
+      occupation:     document.getElementById('f-occ').value,
+      city:           document.getElementById('f-city').value.trim(),
+      moveInDate:     document.getElementById('f-date').value,
+      roomType:       (document.querySelector('input[name="room"]:checked') || {}).value || '',
+      duration:       document.getElementById('f-dur').value,
+      foodPreference: document.getElementById('f-food').value,
+      allergies:      document.getElementById('f-allergy').value.trim(),
+      offerHook:      offers.hook,
+      offerRef:       offers.ref,
+      offerJockey:    offers.jockey,
+      referralName:   document.getElementById('f-refname').value.trim(),
+      referralPhone:  document.getElementById('f-refphone').value.trim(),
+      howFound:       document.getElementById('f-source').value,
+      notes:          document.getElementById('f-notes').value.trim(),
+      whatsappOptIn:  document.getElementById('c-whatsapp').checked,
+    };
+
+    try {
+      const res  = await fetch(API_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || 'Booking failed');
+
+      const detailEl = document.getElementById('success-detail');
+      if (detailEl && data.bookingId) {
+        detailEl.innerHTML += '<br><strong>Booking ID:</strong> ' + data.bookingId;
+      }
+
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('step-bar').style.display  = 'none';
+      document.getElementById('success-screen').style.display = 'flex';
+
+    } catch (err) {
+      const errBox = document.getElementById('submit-error');
+      if (errBox) { errBox.textContent = err.message || 'Something went wrong. Please try again.'; errBox.style.display = 'block'; }
+      btn.innerHTML = '🔒 Confirm & Book';
+      btn.disabled  = false;
+    }
+  }
+</script>
+
+</body>
+</html>
