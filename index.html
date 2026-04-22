@@ -6,6 +6,238 @@
 <title>YUPPP — Finally a PG That Doesn't Suck</title>
 <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
+
+  /* ════════════════════════════════
+     SPLASH SCREEN
+  ════════════════════════════════ */
+  #splash {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #0A0A0A;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  #splash::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+  #splash::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,230,0,0.015) 3px, rgba(255,230,0,0.015) 4px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .sp-corner {
+    position: absolute;
+    width: 60px; height: 60px;
+    z-index: 2;
+    opacity: 0;
+  }
+  .sp-corner::before, .sp-corner::after {
+    content: '';
+    position: absolute;
+    background: #FFE600;
+  }
+  .sp-corner::before { width: 100%; height: 3px; }
+  .sp-corner::after  { width: 3px; height: 100%; }
+  .sp-corner.tl { top: 24px; left: 24px; animation: spCornerIn 0.5s ease 0.1s forwards; }
+  .sp-corner.tr { top: 24px; right: 24px; animation: spCornerTR 0.5s ease 0.2s forwards; }
+  .sp-corner.bl { bottom: 24px; left: 24px; animation: spCornerBL 0.5s ease 0.3s forwards; }
+  .sp-corner.br { bottom: 24px; right: 24px; animation: spCornerBR 0.5s ease 0.4s forwards; }
+  @keyframes spCornerIn  { from { opacity:0; transform:scale(0.6); }           to { opacity:1; transform:scale(1); } }
+  @keyframes spCornerTR  { from { opacity:0; transform:scaleX(-1) scale(0.6);} to { opacity:1; transform:scaleX(-1) scale(1); } }
+  @keyframes spCornerBL  { from { opacity:0; transform:scaleY(-1) scale(0.6);} to { opacity:1; transform:scaleY(-1) scale(1); } }
+  @keyframes spCornerBR  { from { opacity:0; transform:scale(-1,-1) scale(0.6);} to { opacity:1; transform:scale(-1,-1) scale(1); } }
+  .sp-bg-text {
+    position: absolute;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: clamp(8rem, 35vw, 26rem);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,230,0,0.04);
+    letter-spacing: -4px;
+    user-select: none;
+    pointer-events: none;
+    z-index: 0;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    opacity: 0;
+    animation: spFadeIn 1s ease 0.3s forwards;
+  }
+  .sp-hline {
+    position: absolute; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,230,0,0.08), transparent);
+    z-index: 1; opacity: 0;
+    animation: spFadeIn 0.8s ease 0.6s forwards;
+  }
+  .sp-hline.top    { top: 80px; }
+  .sp-hline.bottom { bottom: 80px; }
+  .sp-particles { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+  .sp-p {
+    position: absolute; width: 2px; height: 2px;
+    background: #FFE600; opacity: 0;
+    animation: spDrift linear infinite;
+  }
+  @keyframes spDrift {
+    0%   { transform: translateY(100vh) rotate(0deg);   opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.3; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+  .sp-center {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .sp-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: #FFE600; opacity: 0; margin-bottom: 1.2rem;
+    animation: spFadeUp 0.6s ease 0.5s forwards;
+  }
+  .sp-logo-wrap {
+    position: relative; opacity: 0;
+    animation: spLogoIn 0.7s cubic-bezier(0.175,0.885,0.32,1.275) 0.7s forwards;
+  }
+  .sp-logo-main {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: clamp(4rem, 16vw, 9rem);
+    color: #FFE600; line-height: 1; display: block;
+    position: relative; letter-spacing: -2px;
+  }
+  .sp-logo-main::before, .sp-logo-main::after {
+    content: 'YUPPP';
+    position: absolute; top: 0; left: 0;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: inherit; line-height: 1; letter-spacing: -2px;
+    color: #FFE600; animation: spGlitch1 4s infinite;
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  }
+  .sp-logo-main::after {
+    color: #FF3B3B; animation: spGlitch2 4s infinite;
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  }
+  @keyframes spGlitch1 {
+    0%,92%,100% { transform:translate(0); opacity:0; }
+    93% { transform:translate(-4px,2px); opacity:0.7; }
+    94% { transform:translate(4px,-2px); opacity:0.7; }
+    95% { transform:translate(-2px,0);   opacity:0.7; }
+    96% { transform:translate(0);        opacity:0; }
+  }
+  @keyframes spGlitch2 {
+    0%,92%,100% { transform:translate(0); opacity:0; }
+    93% { transform:translate(4px,-1px);  opacity:0.5; }
+    94% { transform:translate(-4px,2px);  opacity:0.5; }
+    95% { transform:translate(2px,1px);   opacity:0.5; }
+    96% { transform:translate(0);         opacity:0; }
+  }
+  .sp-logo-bg {
+    position: absolute; inset: -6px -14px;
+    background: #0A0A0A; z-index: -1;
+    box-shadow: 0 0 0 3px #FFE600, 8px 8px 0 #FFE600;
+  }
+  @keyframes spLogoIn {
+    from { opacity:0; transform:scale(0.7) rotate(-4deg); }
+    to   { opacity:1; transform:scale(1)   rotate(-2deg); }
+  }
+  .sp-tagline {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.55rem, 2vw, 0.8rem); font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: #0A0A0A; background: #FFE600;
+    padding: 6px 18px; margin-top: 2.2rem;
+    opacity: 0; animation: spFadeUp 0.5s ease 1.2s forwards;
+    box-shadow: 4px 4px 0 rgba(255,230,0,0.3); white-space: nowrap;
+  }
+  .sp-property {
+    margin-top: 2rem; display: flex; align-items: center; gap: 0.8rem;
+    opacity: 0; animation: spFadeUp 0.5s ease 1.5s forwards;
+  }
+  .sp-propline { width: 30px; height: 2px; background: rgba(255,230,0,0.3); }
+  .sp-proptext {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 3px; text-transform: uppercase; color: rgba(255,230,0,0.5);
+  }
+  .sp-progress-wrap {
+    position: absolute; bottom: 48px; left: 50%; transform: translateX(-50%);
+    width: min(320px, 80vw); z-index: 2; opacity: 0;
+    animation: spFadeUp 0.4s ease 1.6s forwards;
+  }
+  .sp-progress-label {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+  }
+  .sp-progress-text {
+    font-family: 'Space Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 2px; text-transform: uppercase; color: rgba(255,230,0,0.4);
+  }
+  .sp-progress-pct {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1rem;
+    color: #FFE600; letter-spacing: 1px;
+  }
+  .sp-progress-track {
+    width: 100%; height: 3px;
+    background: rgba(255,230,0,0.1); border: 1px solid rgba(255,230,0,0.15);
+    position: relative; overflow: hidden;
+  }
+  .sp-progress-fill {
+    height: 100%; background: #FFE600; width: 0%; transition: width 0.1s linear; position: relative;
+  }
+  .sp-progress-fill::after {
+    content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 20px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.6));
+  }
+  .sp-status {
+    position: absolute; bottom: 30px; right: 32px;
+    font-family: 'Space Mono', monospace; font-size: 0.55rem;
+    letter-spacing: 2px; text-transform: uppercase; color: rgba(255,230,0,0.2);
+    z-index: 2; opacity: 0; animation: spFadeIn 0.4s ease 2s forwards;
+  }
+  .sp-dot {
+    display: inline-block; width: 5px; height: 5px;
+    background: #FFE600; border-radius: 50%; margin-right: 6px;
+    animation: spBlink 1s ease-in-out infinite;
+  }
+  @keyframes spBlink { 0%,100% { opacity:1; } 50% { opacity:0.1; } }
+  .sp-version {
+    position: absolute; bottom: 30px; left: 32px;
+    font-family: 'Space Mono', monospace; font-size: 0.55rem;
+    letter-spacing: 2px; text-transform: uppercase; color: rgba(255,230,0,0.15);
+    z-index: 2; opacity: 0; animation: spFadeIn 0.4s ease 2s forwards;
+  }
+  .sp-skip {
+    position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+    font-family: 'Space Mono', monospace; font-size: 0.55rem;
+    letter-spacing: 2px; text-transform: uppercase; color: rgba(255,230,0,0.25);
+    z-index: 3; cursor: pointer;
+    border: 1px solid rgba(255,230,0,0.15); padding: 5px 14px;
+    transition: color 0.2s, border-color 0.2s;
+    opacity: 0; animation: spFadeIn 0.4s ease 2.2s forwards; user-select: none;
+  }
+  .sp-skip:hover { color: rgba(255,230,0,0.7); border-color: rgba(255,230,0,0.4); }
+  #splash.sp-exit {
+    animation: spExit 0.75s cubic-bezier(0.4,0,1,1) forwards;
+  }
+  @keyframes spExit {
+    0%   { clip-path: inset(0 0 0 0);     opacity: 1; }
+    35%  { clip-path: inset(0 0 0 0);     opacity: 1; }
+    100% { clip-path: inset(50% 0 50% 0); opacity: 0; }
+  }
+  @keyframes spFadeUp  { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes spFadeIn  { from { opacity:0; } to { opacity:1; } }
+  body.splashing > *:not(#splash) { visibility: hidden; }
+  /* ════════════════════════════════ */
+
   :root {
     --yellow: #FFE600;
     --black: #0A0A0A;
@@ -1160,6 +1392,47 @@
 </head>
 <body>
 
+<!-- ═══════════════════════════════════════
+     SPLASH SCREEN
+═══════════════════════════════════════ -->
+<div id="splash">
+  <div class="sp-bg-text">YUPPP</div>
+  <div class="sp-hline top"></div>
+  <div class="sp-hline bottom"></div>
+  <div class="sp-corner tl"></div>
+  <div class="sp-corner tr"></div>
+  <div class="sp-corner bl"></div>
+  <div class="sp-corner br"></div>
+  <div class="sp-particles" id="spParticles"></div>
+  <div class="sp-center">
+    <div class="sp-eyebrow">📍 Gopalpura · Jaipur</div>
+    <div class="sp-logo-wrap">
+      <div class="sp-logo-bg"></div>
+      <span class="sp-logo-main">YUPPP</span>
+    </div>
+    <div class="sp-tagline">Finally a PG that doesn't suck</div>
+    <div class="sp-property">
+      <div class="sp-propline"></div>
+      <div class="sp-proptext">Golden Leaf · 9th Floor</div>
+      <div class="sp-propline"></div>
+    </div>
+  </div>
+  <div class="sp-progress-wrap">
+    <div class="sp-progress-label">
+      <span class="sp-progress-text">Loading</span>
+      <span class="sp-progress-pct" id="spPct">0%</span>
+    </div>
+    <div class="sp-progress-track">
+      <div class="sp-progress-fill" id="spBar"></div>
+    </div>
+  </div>
+  <div class="sp-status"><span class="sp-dot"></span>System Online</div>
+  <div class="sp-version">v1.0 · 2025</div>
+  <div class="sp-skip" id="spSkip">Tap to skip →</div>
+</div>
+<!-- ═══════════════════════════════════════ -->
+
+
 <div class="scroll-bar" id="scrollBar"></div>
 
 <!-- NAV -->
@@ -1538,5 +1811,59 @@
     observer.observe(card);
   });
 </script>
+
+<script>
+  // ── SPLASH SCREEN ──────────────────────────────
+  document.body.classList.add('splashing');
+
+  // particles
+  const spPC = document.getElementById('spParticles');
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'sp-p';
+    const s = Math.random() * 3 + 1;
+    p.style.cssText = `left:${Math.random()*100}%;width:${s}px;height:${s}px;animation-duration:${Math.random()*8+5}s;animation-delay:${Math.random()*5}s;`;
+    spPC.appendChild(p);
+  }
+
+  const spBar  = document.getElementById('spBar');
+  const spPct  = document.getElementById('spPct');
+  const spEl   = document.getElementById('splash');
+  const spSkip = document.getElementById('spSkip');
+  let spDone = false;
+
+  function spExit() {
+    if (spDone) return;
+    spDone = true;
+    spBar.style.width = '100%';
+    spPct.textContent = '100%';
+    setTimeout(() => {
+      spEl.classList.add('sp-exit');
+      document.body.classList.remove('splashing');
+      setTimeout(() => { spEl.style.display = 'none'; }, 800);
+    }, 300);
+  }
+
+  function spEaseOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+  const spStart = performance.now();
+  const spDuration = 2800;
+
+  function spTick(now) {
+    const raw = Math.min((now - spStart) / spDuration, 1);
+    const val = Math.round(spEaseOut(raw) * 100);
+    spBar.style.width = val + '%';
+    spPct.textContent = val + '%';
+    if (val < 100) requestAnimationFrame(spTick);
+    else setTimeout(spExit, 350);
+  }
+  setTimeout(() => requestAnimationFrame(spTick), 1600);
+
+  spSkip.addEventListener('click', spExit);
+  spEl.addEventListener('click', spExit);
+  document.addEventListener('keydown', e => { if (['Enter',' ','Escape'].includes(e.key)) spExit(); });
+  // ── END SPLASH ─────────────────────────────────
+</script>
+
 </body>
 </html>
